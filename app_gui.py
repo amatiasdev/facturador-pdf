@@ -2,7 +2,6 @@ import os
 from tkinter import Tk, Label, Entry, Button, messagebox
 from datetime import datetime
 from jinja2 import Environment, FileSystemLoader
-from weasyprint import HTML
 
 # Ruta de carpetas
 TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), 'templates')
@@ -35,10 +34,11 @@ def generar_factura():
         fecha=fecha
     )
 
-    nombre_archivo = f"{cliente.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d%H%M%S')}.pdf"
+    nombre_archivo = f"{cliente.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d%H%M%S')}.html"
     ruta_archivo = os.path.join(OUTPUT_DIR, nombre_archivo)
 
-    HTML(string=html_renderizado).write_pdf(ruta_archivo)
+    with open(ruta_archivo, 'w', encoding='utf-8') as f:
+        f.write(html_renderizado)
 
     messagebox.showinfo("Éxito", f"Factura generada:\n{ruta_archivo}")
 
@@ -61,7 +61,7 @@ entry_concepto.grid(row=1, column=1, padx=10, pady=5)
 entry_monto.grid(row=2, column=1, padx=10, pady=5)
 entry_fecha.grid(row=3, column=1, padx=10, pady=5)
 
-btn_generar = Button(root, text="Generar PDF", command=generar_factura)
+btn_generar = Button(root, text="Generar HTML", command=generar_factura)
 btn_generar.grid(row=4, column=0, columnspan=2, pady=10)
 
 root.mainloop()
